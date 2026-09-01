@@ -1,0 +1,42 @@
+name: Template CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  generator:
+    strategy:
+      matrix:
+        python: ["3.10", "3.12", "3.14"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install -e ".[test]"
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: pytest -q
+
+  generated-profiles:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install build pytest "vllm-hust-ext @ git+https://github.com/vLLM-HUST/extension-manager.git@main"
+      - run: python tools/new_extension.py --kind in_process_plugin --name example-runtime --extension-id org.vllm-hust.example-runtime --output /tmp/runtime
+      - run: python tools/new_extension.py --kind import_only --name example-contract --extension-id org.vllm-hust.example-contract --output /tmp/contract
+      - run: python tools/new_extension.py --kind kv_service_adapter --name example-kv-provider --extension-id org.vllm-hust.example-kv --provider-name example-kv --output /tmp/kv
+      - run: python -m pip install /tmp/runtime /tmp/contract /tmp/kv
+      - run: pytest -q /tmp/runtime/tests /tmp/contract/tests /tmp/kv/tests
+      - run: python -m build --wheel /tmp/runtime
+      - run: python -m build --wheel /tmp/contract
+      - run: python -m build --wheel /tmp/kv
+      - run: vllm-hust-ext extension list --json > /tmp/extensions.json
+      - run: python -c "import json; ids={x['bundle_id'] for x in json.load(open('/tmp/extensions.json'))}; assert {'org.vllm-hust.example-runtime','org.vllm-hust.example-contract','org.vllm-hust.example-kv'} <= ids"
+      - run: "! vllm-hust-ext extension enable org.vllm-hust.example-contract"
