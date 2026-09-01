@@ -33,7 +33,9 @@ jobs:
       - run: python tools/new_extension.py --kind import_only --name example-contract --extension-id org.vllm-hust.example-contract --output /tmp/contract
       - run: python tools/new_extension.py --kind kv_service_adapter --name example-kv-provider --extension-id org.vllm-hust.example-kv --provider-name example-kv --output /tmp/kv
       - run: python -m pip install /tmp/runtime /tmp/contract /tmp/kv
-      - run: pytest -q /tmp/runtime/tests /tmp/contract/tests /tmp/kv/tests
+      - run: pytest -q /tmp/runtime/tests
+      - run: pytest -q /tmp/contract/tests
+      - run: pytest -q /tmp/kv/tests
       - run: python -m build --wheel /tmp/runtime
       - run: python -m build --wheel /tmp/contract
       - run: python -m build --wheel /tmp/kv
