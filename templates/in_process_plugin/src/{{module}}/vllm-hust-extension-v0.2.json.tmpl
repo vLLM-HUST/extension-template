@@ -1,0 +1,35 @@
+{
+  "schema_version": "0.2-experimental",
+  "extension_id": "{{extension_id}}",
+  "extension_version": "0.1.0.dev0",
+  "kind": "in_process_plugin",
+  "host": {
+    "provider": "vllm",
+    "name": "vllm",
+    "version_range": ">=0"
+  },
+  "runtime": {
+    "type": "python",
+    "process_scope": "vllm-processes",
+    "isolation": "trusted_in_process"
+  },
+  "lifecycle_owner": "vllm",
+  "protocols": [
+    {"name": "vllm.example.unversioned-surface", "version_range": null}
+  ],
+  "implementation": [
+    {
+      "type": "python_entry_point",
+      "group": "vllm.general_plugins",
+      "name": "{{module}}"
+    }
+  ],
+  "requires_services": [],
+  "activation": {
+    "entry_points": [
+      {"group": "vllm.general_plugins", "name": "{{module}}"}
+    ],
+    "environment": {},
+    "additional_config": {}
+  }
+}

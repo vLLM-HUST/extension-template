@@ -1,0 +1,17 @@
+# {{display_name}}
+
+Extension ID: `{{extension_id}}`
+
+This package is a trusted in-process vLLM extension. Replace the example
+registration function, host range, protocol declarations, permissions, and
+launch constraints before publishing.
+
+```bash
+pip install {{distribution}}
+vllm-hust-ext extension inspect {{extension_id}}
+vllm-hust-ext extension enable {{extension_id}}
+vllm-hust-ext run -- vllm serve MODEL
+vllm-hust-ext extension disable {{extension_id}}
+vllm-hust-ext extension forget {{extension_id}}
+pip uninstall {{distribution}}
+```

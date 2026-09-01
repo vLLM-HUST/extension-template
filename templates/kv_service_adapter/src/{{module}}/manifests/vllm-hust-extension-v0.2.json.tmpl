@@ -1,0 +1,47 @@
+{
+  "schema_version": "0.2-experimental",
+  "extension_id": "{{extension_id}}",
+  "extension_version": "0.1.0.dev0",
+  "kind": "kv_service_adapter",
+  "host": {
+    "provider": "{{provider_name}}",
+    "name": "{{distribution}}-service",
+    "version_range": ">=0"
+  },
+  "runtime": {
+    "type": "composite",
+    "process_scope": "external_service_and_vllm_connector",
+    "isolation": "external_service"
+  },
+  "lifecycle_owner": "external_operator",
+  "protocols": [
+    {"name": "{{provider_name}}-service-api", "version_range": null},
+    {"name": "vllm-kv-transfer-config", "version_range": null}
+  ],
+  "implementation": [
+    {
+      "type": "external_service",
+      "service": "{{display_name}}",
+      "source_repository": "REPLACE_WITH_CANONICAL_REPOSITORY"
+    },
+    {
+      "type": "host_builtin",
+      "host": "vllm",
+      "symbols": ["REPLACE_WITH_OFFICIAL_CONNECTOR"]
+    }
+  ],
+  "requires_services": [
+    {
+      "service_id": "{{provider_name}}-service",
+      "protocol": "http-health",
+      "version_range": null,
+      "endpoint_config": "health_url",
+      "optional": false
+    }
+  ],
+  "activation": {
+    "entry_points": [],
+    "environment": {},
+    "additional_config": {}
+  }
+}

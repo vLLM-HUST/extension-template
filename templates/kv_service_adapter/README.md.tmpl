@@ -1,0 +1,17 @@
+# {{display_name}}
+
+Extension ID: `{{extension_id}}`  
+Provider: `{{provider_name}}`
+
+This package renders connector configuration and checks an externally operated
+KV service. It must not start, stop, upgrade, clear, or delete that service.
+Replace the example connector keys and health contract with the real official
+API before publishing.
+
+```bash
+pip install {{distribution}}
+vllm-hust-ext extension configure {{extension_id}} --file config.json
+vllm-hust-ext extension check {{extension_id}}
+vllm-hust-ext extension plan {{extension_id}}
+vllm-hust-ext extension render {{extension_id}}
+```

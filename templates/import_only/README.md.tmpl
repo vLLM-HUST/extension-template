@@ -1,0 +1,13 @@
+# {{display_name}}
+
+Extension ID: `{{extension_id}}`
+
+This package is deliberately `import_only`. It is discoverable and inspectable,
+but the Extension Manager must refuse enablement until the host accepts the
+required contracts and the manifest is revised to an active implementation.
+
+```bash
+pip install {{distribution}}
+vllm-hust-ext extension inspect {{extension_id}}
+vllm-hust-ext extension check {{extension_id}}
+```

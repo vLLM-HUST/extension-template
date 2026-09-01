@@ -1,0 +1,114 @@
+from __future__ import annotations
+
+import json
+from typing import Any
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
+
+from vllm_hust_ext.manifest import BundleManifest
+from vllm_hust_ext.providers.base import (
+    PlanAction,
+    ProviderCheck,
+    ProviderPlan,
+    RenderArtifact,
+)
+
+
+class {{class_name}}Provider:
+    """Render and check only; the external operator owns service lifecycle."""
+
+    name = "{{provider_name}}"
+
+    def supports(self, manifest: BundleManifest) -> bool:
+        return manifest.host.provider == self.name
+
+    def plan(
+        self,
+        manifest: BundleManifest,
+        configuration: dict[str, Any],
+        *,
+        enabled: bool,
+    ) -> ProviderPlan:
+        connector = configuration.get("connector")
+        if not isinstance(connector, str) or not connector:
+            raise ValueError("connector is required")
+        generated = {
+            "kv_transfer_config": {
+                "kv_connector": connector,
+                "kv_role": configuration.get("kv_role", "kv_both"),
+            }
+        }
+        return ProviderPlan(
+            manifest.bundle_id,
+            self.name,
+            (
+                PlanAction(
+                    "render_connector_config",
+                    "vllm",
+                    "vllm",
+                    details={"enabled": enabled},
+                ),
+                PlanAction(
+                    "check_service",
+                    "{{provider_name}}-service",
+                    "external_operator",
+                ),
+            ),
+            generated,
+            (
+                "External service lifecycle and KV data remain operator-owned; "
+                "the Manager will not mutate them.",
+            ),
+        )
+
+    def render(self, plan: ProviderPlan) -> tuple[RenderArtifact, ...]:
+        return (
+            RenderArtifact(
+                "{{provider_name}}-connector.json",
+                "application/json",
+                json.dumps(plan.generated_config, indent=2, sort_keys=True),
+            ),
+        )
+
+    def check(
+        self, manifest: BundleManifest, configuration: dict[str, Any]
+    ) -> ProviderCheck:
+        health_url = configuration.get("health_url")
+        connector = configuration.get("connector")
+        if not health_url or not connector:
+            return ProviderCheck(
+                None,
+                False,
+                degraded=True,
+                evidence=("connector and health_url are required",),
+            )
+        try:
+            request = Request(str(health_url), method="GET")
+            with urlopen(request, timeout=2) as response:  # noqa: S310
+                healthy = 200 <= response.status < 300
+                return ProviderCheck(
+                    None,
+                    True,
+                    reachable=True,
+                    healthy=healthy,
+                    degraded=not healthy,
+                    evidence=(f"health endpoint returned {response.status}",),
+                )
+        except HTTPError as error:
+            return ProviderCheck(
+                None,
+                True,
+                reachable=True,
+                healthy=False,
+                degraded=True,
+                evidence=(f"health endpoint returned {error.code}",),
+            )
+        except (OSError, URLError) as error:
+            return ProviderCheck(
+                None,
+                True,
+                reachable=False,
+                healthy=False,
+                degraded=True,
+                evidence=(f"external service is unreachable: {error}",),
+            )
