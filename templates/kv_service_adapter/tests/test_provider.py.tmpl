@@ -11,7 +11,7 @@ def test_provider_plan_is_non_mutating_and_operator_owned() -> None:
         / "src"
         / "{{module}}"
         / "manifests"
-        / "vllm-hust-extension-v0.2.json"
+        / "vllm-hust-extension-v0.3.json"
     )
     manifest = load_manifest(manifest_path)
     plan = {{class_name}}Provider().plan(
@@ -21,6 +21,7 @@ def test_provider_plan_is_non_mutating_and_operator_owned() -> None:
     )
 
     assert manifest.bundle_id == "{{extension_id}}"
+    assert manifest.schema_version == "0.3-experimental"
     assert manifest.lifecycle_owner == "external_operator"
     assert all(not action.mutating for action in plan.actions)
     assert plan.generated_config["kv_transfer_config"]["kv_connector"] == (

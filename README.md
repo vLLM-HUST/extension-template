@@ -25,8 +25,9 @@ For an external KV system, select `kv_service_adapter` and add
 `--provider-name my-kv-system`. For an inert contract proposal, select
 `import_only`.
 
-The generated repository contains a static Manifest 0.2 descriptor, package
-entry points, tests, build metadata, and CI. Replace every example
+The generated repository contains a static Manifest 0.3 descriptor,
+`MOD_METADATA.json`, package entry points, tests, build metadata, and CI.
+Replace every example
 implementation and compatibility range with evidence from the real project.
 
 See [README.zh.md](README.zh.md) and [CONTRIBUTING.md](CONTRIBUTING.md) for the

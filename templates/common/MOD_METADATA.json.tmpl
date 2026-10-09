@@ -1,0 +1,35 @@
+{
+  "schema_version": "vllm-hust-mod-metadata-v1",
+  "mod_id": "{{extension_id}}",
+  "repository": "{{distribution}}",
+  "display_name": "{{display_name}}",
+  "canonical_repository": "https://github.com/vLLM-HUST/{{distribution}}",
+  "responsibility": {
+    "organization": "vLLM-HUST",
+    "maintainers": [
+      {
+        "name": "REPLACE_WITH_MAINTAINER_NAME",
+        "github": "REPLACE_WITH_MAINTAINER_GITHUB"
+      }
+    ],
+    "advisor_status": "replace_before_publish",
+    "advisors": []
+  },
+  "lifecycle": {
+    "status": "experimental",
+    "default_enabled": false,
+    "activation_contract": "explicit Extension Manager enablement after compatibility checks",
+    "rollback_contract": "disable or forget the extension, then uninstall the distribution"
+  },
+  "scope": {
+    "mechanism": "REPLACE_WITH_ONE_MECHANISM",
+    "supported_workloads": [],
+    "out_of_scope": []
+  },
+  "evidence": {
+    "qualification": "unqualified",
+    "latest_result": null,
+    "index": "README.md",
+    "performance_claims": []
+  }
+}
