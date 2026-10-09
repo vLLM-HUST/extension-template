@@ -42,7 +42,12 @@ def test_each_profile_generates_without_placeholders(
         for token in unresolved
     )
     assert (output / "pyproject.toml").is_file()
-    assert len(list(output.rglob("vllm-hust-extension-v0.2.json"))) == 1
+    assert len(list(output.rglob("vllm-hust-extension-v0.3.json"))) == 1
+    metadata = output / "MOD_METADATA.json"
+    assert metadata.is_file()
+    assert '"schema_version": "vllm-hust-mod-metadata-v1"' in metadata.read_text(
+        encoding="utf-8"
+    )
 
 
 def test_external_service_requires_provider_name(tmp_path: Path) -> None:

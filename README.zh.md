@@ -20,6 +20,7 @@ python tools/new_extension.py \
 外部 KV 系统使用 `kv_service_adapter`，并传入
 `--provider-name my-kv-system`；尚无宿主接口的课题使用 `import_only`。
 
-生成结果包含 Manifest 0.2、正确的项目命名空间入口、打包配置、测试和 CI。
+生成结果包含 Manifest 0.3、`MOD_METADATA.json`、正确的项目命名空间入口、
+打包配置、测试和 CI。
 提交前必须把示例兼容范围、协议和实现替换为项目的真实证据，禁止把
 `>=0` 或示例健康接口直接当成发布承诺。

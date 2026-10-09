@@ -7,7 +7,8 @@ import {{module}}
 
 def test_descriptor_is_discoverable_but_not_activatable() -> None:
     manifest = load_manifest(
-        Path({{module}}.__file__).with_name("vllm-hust-extension-v0.2.json")
+        Path({{module}}.__file__).with_name("vllm-hust-extension-v0.3.json")
     )
     assert manifest.bundle_id == "{{extension_id}}"
+    assert manifest.schema_version == "0.3-experimental"
     assert activation_blocker(manifest) is not None

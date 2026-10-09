@@ -1,12 +1,13 @@
 {
-  "schema_version": "0.2-experimental",
+  "schema_version": "0.3-experimental",
   "extension_id": "{{extension_id}}",
   "extension_version": "0.1.0.dev0",
   "kind": "kv_service_adapter",
   "host": {
     "provider": "{{provider_name}}",
     "name": "{{distribution}}-service",
-    "version_range": ">=0"
+    "version_range": ">=0",
+    "api_range": ">=1,<2"
   },
   "runtime": {
     "type": "composite",
@@ -37,6 +38,18 @@
       "version_range": null,
       "endpoint_config": "health_url",
       "optional": false
+    }
+  ],
+  "requires_extensions": [],
+  "resource_claims": [],
+  "components": [
+    {
+      "component_id": "{{distribution}}-adapter",
+      "contracts": ["vllm.kv-transfer-config.experimental"],
+      "execution_planes": ["bridge"],
+      "isolation": "process_isolated",
+      "implementation_ref": "{{module}}.provider:{{class_name}}Provider",
+      "permissions": ["network_egress"]
     }
   ],
   "activation": {
