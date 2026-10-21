@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 import pytest
@@ -35,6 +36,7 @@ def test_each_profile_generates_without_placeholders(
         "{{extension_id}}",
         "{{provider_name}}",
         "{{class_name}}",
+        "{{manager_requirement}}",
     )
     assert not any(
         token in path.read_text(encoding="utf-8")
@@ -42,6 +44,21 @@ def test_each_profile_generates_without_placeholders(
         for token in unresolved
     )
     assert (output / "pyproject.toml").is_file()
+    manager = (output / "requirements-manager.txt").read_text().strip()
+    assert re.fullmatch(
+        r"vllm-hust-ext @ git\+https://github.com/vLLM-HUST/extension-manager.git@[a-f0-9]{40}",
+        manager,
+    )
+    assert (
+        manager
+        == (Path(__file__).resolve().parents[1] / "requirements-manager.txt")
+        .read_text()
+        .strip()
+    )
+    assert manager in (output / "pyproject.toml").read_text()
+    workflow = (output / ".github/workflows/ci.yml").read_text()
+    assert "-r requirements-manager.txt" in workflow
+    assert "@main" not in workflow
     assert len(list(output.rglob("vllm-hust-extension-v0.3.json"))) == 1
     metadata = output / "MOD_METADATA.json"
     assert metadata.is_file()

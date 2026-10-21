@@ -53,6 +53,11 @@ def generate(
         "{{extension_id}}": extension_id,
         "{{provider_name}}": provider_name,
         "{{class_name}}": class_name,
+        "{{manager_requirement}}": (
+            Path(__file__).resolve().parents[1] / "requirements-manager.txt"
+        )
+        .read_text(encoding="utf-8")
+        .strip(),
     }
     template_root = Path(__file__).resolve().parents[1] / "templates"
     for source in (template_root / "common", template_root / kind):
