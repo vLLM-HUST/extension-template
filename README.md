@@ -30,5 +30,12 @@ The generated repository contains a static Manifest 0.3 descriptor,
 Replace every example
 implementation and compatibility range with evidence from the real project.
 
+The Manager dependency is installed from the immutable source revision in
+`requirements-manager.txt`, not from an unpublished development version on PyPI.
+The generator carries that same requirement into package metadata and CI for all
+three profiles. Updating it requires rerunning generated-package installation,
+discovery, and import-only rejection tests. Generated packages need Git/network
+access to install this source dependency; no shared service is started.
+
 See [README.zh.md](README.zh.md) and [CONTRIBUTING.md](CONTRIBUTING.md) for the
 required review checklist.

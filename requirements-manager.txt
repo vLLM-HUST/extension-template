@@ -1,0 +1,1 @@
+vllm-hust-ext @ git+https://github.com/vLLM-HUST/extension-manager.git@a39e78ca5d2b36bd09b878a1b6f48a6e61d9302d
